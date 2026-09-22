@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポモドーロタイマー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div id="mode-text" class="mode-text mode-work">作業中 (集中)</div>
+
+    <!-- 円形タイマー -->
+    <div class="timer-container">
+      <svg class="progress-ring" width="220" height="220">
+        <circle class="progress-ring-bg" cx="110" cy="110" r="100" />
+        <circle id="progress-circle" class="progress-ring-circle mode-work-stroke" cx="110" cy="110" r="100" />
+      </svg>
+      <div id="time-display" class="time-display">25:00</div>
+    </div>
+
+    <!-- クール進捗インジケーター -->
+    <div class="cycle-section">
+      <div id="cycle-title" class="cycle-title">現在のクール進捗 (第 1 クール)</div>
+      <div class="cycle-dots" id="cycle-dots">
+        <!-- JSで動的生成 -->
+      </div>
+    </div>
+
+    <!-- 統計表示（総サイクル・総クール・達成クール） -->
+    <div class="stats-box">
+      <div class="stat-item">
+        <span class="stat-label">総サイクル数</span>
+        <span id="total-cycles" class="stat-value">0 回</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-label">総クール数</span>
+        <span id="total-cools-all" class="stat-value">0 クール</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-label">達成クール数</span>
+        <span id="target-cools-display" class="stat-value">0 / 2</span>
+      </div>
+    </div>
+
+    <!-- 基本操作ボタン -->
+    <div class="btn-container">
+      <button id="start-btn" class="btn btn-start">スタート</button>
+      <button id="pause-btn" class="btn btn-pause">一時停止</button>
+      <button id="reset-btn" class="btn btn-reset">タイマーリセット</button>
+    </div>
+
+    <!-- 詳細設定アコーディオン -->
+    <details class="settings-card">
+      <summary class="settings-header">⚙️ タイマー・サウンド・データ詳細設定</summary>
+      <div class="settings-body">
+        
+        <!-- 作業時間 -->
+        <div class="setting-group">
+          <label>作業時間</label>
+          <div class="time-input-wrap">
+            <input type="number" id="input-work-min" min="0" max="180" value="25">
+            <span>分</span>
+            <input type="number" id="input-work-sec" min="0" max="59" value="0">
+            <span>秒</span>
+          </div>
+        </div>
+
+        <!-- 小休憩 -->
+        <div class="setting-group">
+          <label>小休憩</label>
+          <div class="time-input-wrap">
+            <input type="number" id="input-short-min" min="0" max="60" value="5">
+            <span>分</span>
+            <input type="number" id="input-short-sec" min="0" max="59" value="0">
+            <span>秒</span>
+          </div>
+        </div>
+
+        <!-- 大休憩 -->
+        <div class="setting-group">
+          <label>大休憩</label>
+          <div class="time-input-wrap">
+            <input type="number" id="input-long-min" min="0" max="120" value="30">
+            <span>分</span>
+            <input type="number" id="input-long-sec" min="0" max="59" value="0">
+            <span>秒</span>
+          </div>
+        </div>
+
+        <hr class="setting-hr">
+
+        <div class="setting-group">
+          <label for="input-cycles">1クールのサイクル数</label>
+          <input type="number" id="input-cycles" class="single-input" min="1" max="12" value="4">
+        </div>
+        <div class="setting-group">
+          <label for="input-target-cools">目標クール数</label>
+          <input type="number" id="input-target-cools" class="single-input" min="1" max="20" value="2">
+        </div>
+
+        <hr class="setting-hr">
+
+        <!-- 音色選択（8種類） -->
+        <div class="setting-group">
+          <label for="select-tone">通常チャイムの音色</label>
+          <select id="select-tone" class="tone-select">
+            <option value="triangle">優しいチャイム (三角波)</option>
+            <option value="sine">まろやかマリンバ (正弦波)</option>
+            <option value="glocken">オルゴール・グロッケン (高音金属)</option>
+            <option value="harp">穏やかなハープ (アタック調整)</option>
+            <option value="xylophone">シロフォン (短音・木琴)</option>
+            <option value="flute">まろやかフルート (フィルター)</option>
+            <option value="square">レトロ 8-bit (矩形波)</option>
+            <option value="sawtooth">ノスタルジック (のこぎり波)</option>
+          </select>
+        </div>
+
+        <!-- 達成ファンファーレの選択 -->
+        <div class="setting-group">
+          <label for="select-fanfare">目標達成メロディー</label>
+          <div class="fanfare-row">
+            <select id="select-fanfare" class="tone-select">
+              <option value="grand">王道ロングファンファーレ</option>
+              <option value="cheerful">爽やかクリアチャイム</option>
+              <option value="levelup">レベルアップ (8-bit)</option>
+              <option value="calm">穏やかなカデンツ</option>
+            </select>
+            <button id="test-fanfare-btn" type="button" class="btn-test">試聴</button>
+          </div>
+        </div>
+
+        <!-- 音量 -->
+        <div class="setting-group">
+          <label for="input-volume">音量: <span id="volume-val">25%</span></label>
+          <div class="volume-row">
+            <input type="range" id="input-volume" min="0" max="100" value="25">
+            <button id="test-sound-btn" type="button" class="btn-test">通常試聴</button>
+          </div>
+        </div>
+
+        <hr class="setting-hr">
+
+        <!-- 分離されたリセットボタン -->
+        <div class="reset-buttons-container">
+          <button id="reset-stats-btn" type="button" class="btn-sub-reset">📊 累計統計をリセット</button>
+          <button id="reset-settings-btn" type="button" class="btn-sub-reset">⚙️ 設定を初期値に戻す</button>
+        </div>
+
+      </div>
+    </details>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

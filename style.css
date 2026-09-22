@@ -1,0 +1,327 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+}
+
+.mode-text {
+  font-size: 21px;
+  font-weight: bold;
+  margin-bottom: 22px;
+  text-align: center;
+  transition: color 0.3s;
+}
+
+.mode-work { color: #e74c3c; }
+.mode-short-break { color: #2ecc71; }
+.mode-long-break { color: #3498db; }
+
+/* SVG タイマー */
+.timer-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-bg {
+  stroke: #e1e5ee;
+  stroke-width: 12;
+  fill: transparent;
+}
+
+.progress-ring-circle {
+  stroke-width: 12;
+  stroke-linecap: round;
+  fill: transparent;
+  stroke-dasharray: 628.318;
+  stroke-dashoffset: 0;
+  transition: stroke 0.3s;
+}
+
+.mode-work-stroke { stroke: #e74c3c; }
+.mode-short-break-stroke { stroke: #2ecc71; }
+.mode-long-break-stroke { stroke: #3498db; }
+
+.time-display {
+  position: absolute;
+  font-size: 44px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* クール進捗 */
+.cycle-section {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.cycle-title {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+
+.cycle-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #d2d7dc;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: bold;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.dot.active-work {
+  background-color: #e74c3c;
+  animation: pulse 1.2s infinite alternate;
+}
+
+.dot.completed {
+  background-color: #2ecc71;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.15); }
+}
+
+/* 統計ボックス（3カラム構成） */
+.stats-box {
+  margin-top: 24px;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 32px;
+  background-color: #e5e7eb;
+}
+
+.stat-label {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* メイン操作ボタン */
+.btn-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.btn {
+  border: none;
+  color: #ffffff;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-start { background-color: #4caf50; }
+.btn-pause { background-color: #ff9800; }
+.btn-reset { background-color: #f44336; }
+
+/* 設定パネル */
+.settings-card {
+  margin-top: 26px;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.settings-header {
+  padding: 14px 18px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #475569;
+  cursor: pointer;
+  background-color: #f8fafc;
+  outline: none;
+  user-select: none;
+}
+
+.settings-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.setting-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #334155;
+}
+
+.time-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.time-input-wrap input {
+  width: 52px;
+  padding: 5px 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: right;
+  outline: none;
+}
+
+.time-input-wrap span {
+  font-size: 12px;
+  color: #64748b;
+  margin-right: 4px;
+}
+
+.single-input,
+.tone-select {
+  width: 150px;
+  padding: 5px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.single-input {
+  text-align: right;
+}
+
+.tone-select {
+  text-align: left;
+}
+
+.setting-hr {
+  border: none;
+  border-top: 1px solid #f1f5f9;
+  margin: 2px 0;
+}
+
+.fanfare-row,
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.volume-row input[type="range"] {
+  width: 90px;
+}
+
+.btn-test {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.btn-test:active {
+  background: #e2e8f0;
+}
+
+/* 設定内のリセットボタン群 */
+.reset-buttons-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.btn-sub-reset {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #64748b;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-sub-reset:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btn-sub-reset:active {
+  background-color: #e2e8f0;
+}
